@@ -164,7 +164,8 @@
 <!-- AUTH GATE -->
 <div id="auth-gate" style="
   position:fixed; inset:0; background:var(--bg);
-  display:flex; align-items:center; justify-content:center;
+  display:none; 
+  align-items:center; justify-content:center;
   z-index:9999; flex-direction:column; gap:0;
 ">
   <div style="width:360px;">
@@ -189,12 +190,17 @@
     id="auth-send-btn" onclick="authSignIn()">
     Einloggen
   </button>
+  <!-- Neuer Abbrechen-Button -->
+  <button class="btn btn-secondary" style="width:100%;justify-content:center;margin-top:8px"
+    onclick="cancelAdminLogin()">
+    Zurück zum Schnellzugang
+  </button>
   <p id="auth-msg" style="margin-top:12px; font-size:13px; font-family:'DM Mono',monospace; min-height:20px;"></p>
 </div>
     </div>
   </div>
     
-    <header id="app-header" style="display:none">  
+    <header id="app-header">  
   
       <h1>Asset<span>Track</span></h1>
   <div class="header-actions">
@@ -421,39 +427,55 @@ async function authSignIn() {
 
 function authMsg(text, color) {
   const el = document.getElementById('auth-msg');
-  el.textContent = text;
-  el.style.color = color;
+  if (el) { el.textContent = text; el.style.color = color; }
 }
 
+// 1. Initialisierung: Startet standardmäßig direkt im User-Modus
 async function initAuth() {
-  document.body.classList.add('locked');
-
   const { data: { session } } = await authClient.auth.getSession();
-  if (session) authSuccess(session.user);
+  if (session) {
+    authSuccess(session.user);
+  } else {
+    currentRole = 'user';
+    initRole();
+    loadAllDataFromSupabase();
+  }
 
   authClient.auth.onAuthStateChange((_event, session) => {
-    if (session) authSuccess(session.user);
-    else {
-      document.body.classList.add('locked');
-      document.getElementById('auth-gate').style.display = 'flex';
+    if (session) {
+      authSuccess(session.user);
+    } else {
+      currentRole = 'user';
+      initRole();
     }
   });
 }
 
+// 2. Wird ausgeführt, sobald der Supabase Login erfolgreich war
 function authSuccess(user) {
   document.body.classList.remove('locked');
   document.getElementById('auth-gate').style.display = 'none';
-  document.getElementById('app-header').style.display = 'flex';
-  document.getElementById('app-tabs').style.display = 'flex';
-  document.getElementById('app-main').style.display = 'block';
-  setUserStatus('ok', user.email);
-  initRole();                  // ← neu hier
-  loadAllDataFromSupabase();   // ← neu hier
+  setUserStatus('ok', `Admin: ${user.email}`);
+  currentRole = 'admin';
+  initRole();
+  loadAllDataFromSupabase();
 }
 
+// 3. Loggt den Nutzer aus Supabase aus und setzt alles zurück auf Gast-Status
 async function authSignOut() {
   await authClient.auth.signOut();
-  window.location.reload();
+  currentRole = 'user';
+  history = [];
+  cards = [];
+  setUserStatus('ok', 'Gast-Modus');
+  initRole();
+  loadAllDataFromSupabase();
+}
+
+// 4. Funktion für den neuen Abbrechen-Button im Login-Fenster
+function cancelAdminLogin() {
+  document.getElementById('auth-gate').style.display = 'none';
+  document.getElementById('global-role-select').value = 'user';
 }
 
 initAuth();
@@ -573,21 +595,18 @@ function showNotification(title, message, type = 'success') {
 // ===== ROLLENWECHSEL =====
 async function handleRoleChange(newRole) {
   if (newRole === 'admin') {
-    const password = prompt("Admin-Passwort erforderlich:");
-    if (password === "1234") {
-      currentRole = 'admin';
-      await loadAllDataFromSupabase();
-      initRole();
-      showNotification('Erfolg', 'Admin-Bereich freigeschaltet!', 'success');
+    const { data: { session } } = await authClient.auth.getSession();
+    if (session) {
+      // Wenn bereits eingeloggt, direkt als Admin bestätigen
+      authSuccess(session.user);
     } else {
-      showNotification('Fehler', 'Falsches Passwort!', 'error');
-      document.getElementById('global-role-select').value = 'user';
+      // Wenn nicht eingeloggt, zeige das Supabase-Anmeldefenster
+      document.getElementById('auth-gate').style.display = 'flex';
+      document.getElementById('auth-email-input').focus();
     }
   } else {
-    currentRole = 'user';
-    history = [];
-    cards = [];
-    initRole();
+    // Wechsel zurück zu User meldet den Admin automatisch ab
+    authSignOut();
   }
 }
 
