@@ -458,18 +458,10 @@ function authSuccess(user) {
 }
 
 async function authSignOut() {
+  setUserStatus('loading', 'Melde ab...');
   await authClient.auth.signOut();
-  currentRole = 'user';
-  history = [];
-  cards = [];
-  setUserStatus('ok', 'Gast-Modus');
-  
-  // Das sorgt dafür, dass das Dropdown oben rechts wieder auf "User" springt:
-  const selectEl = document.getElementById('global-role-select');
-  if (selectEl) selectEl.value = 'user';
-  
-  initRole();
-  loadAllDataFromSupabase();
+  // Lädt die Seite frisch als Gast/User neu – behebt jeden State-Bug im Keim!
+  window.location.reload();
 }
   
 function cancelAdminLogin() {
