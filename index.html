@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Asset Management</title>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <style>
   @import url('https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=Syne:wght@400;600;700;800&display=swap');
 
@@ -152,57 +152,50 @@
   .autofill-suggestion-item { padding: 10px 14px; cursor: pointer; font-size: 13px; border-bottom: 1px solid var(--border); display: flex; justify-content: space-between; }
   .autofill-suggestion-item:hover { background: var(--border); color: var(--accent); }
   .autofill-id { color: var(--muted); font-family: 'DM Mono', monospace; font-size: 11px; }
-.scan-hint { background: var(--surface2); border: 1px solid var(--border); border-radius: 8px; padding: 10px 14px; font-size: 12px; color: var(--muted); font-family: 'DM Mono', monospace; margin-top: 8px; }
+  .scan-hint { background: var(--surface2); border: 1px solid var(--border); border-radius: 8px; padding: 10px 14px; font-size: 12px; color: var(--muted); font-family: 'DM Mono', monospace; margin-top: 8px; }
 
   body.locked { overflow: hidden; pointer-events: none; }
-#auth-gate { pointer-events: all; }
-
+  #auth-gate { pointer-events: all; }
 </style>
 </head>
 <body>
 
-<!-- AUTH GATE -->
 <div id="auth-gate" style="
   position:fixed; inset:0; background:var(--bg);
-  display:none; 
-  align-items:center; justify-content:center;
+  display:none; align-items:center; justify-content:center;
   z-index:9999; flex-direction:column; gap:0;
 ">
   <div style="width:360px;">
     <h1 style="font-size:28px; font-weight:800; margin-bottom:4px;">
       Asset<span style="color:var(--accent)">Track</span>
     </h1>
-    <p style="color:var(--muted); font-size:13px; font-family:'DM Mono',monospace; margin-bottom:32px;">
-      
-    </p>
+    <p style="color:var(--muted); font-size:13px; font-family:'DM Mono',monospace; margin-bottom:32px;"></p>
 
-<div id="auth-form-wrap">
-  <div class="form-group">
-    <label>Username</label>
-    <input type="email" id="auth-email-input" placeholder="Username123">
-  </div>
-  <div class="form-group">
-    <label>Passwort</label>
-    <input type="password" id="auth-password-input" placeholder="••••••••"
-      onkeydown="if(event.key==='Enter') authSignIn()">
-  </div>
-  <button class="btn btn-primary" style="width:100%;justify-content:center;margin-top:4px"
-    id="auth-send-btn" onclick="authSignIn()">
-    Einloggen
-  </button>
-  <!-- Neuer Abbrechen-Button -->
-  <button class="btn btn-secondary" style="width:100%;justify-content:center;margin-top:8px"
-    onclick="cancelAdminLogin()">
-    Zurück zum Schnellzugang
-  </button>
-  <p id="auth-msg" style="margin-top:12px; font-size:13px; font-family:'DM Mono',monospace; min-height:20px;"></p>
-</div>
+    <div id="auth-form-wrap">
+      <div class="form-group">
+        <label>E-Mail-Adresse</label>
+        <input type="email" id="auth-email-input" placeholder="admin@firma.de">
+      </div>
+      <div class="form-group">
+        <label>Passwort</label>
+        <input type="password" id="auth-password-input" placeholder="••••••••"
+          onkeydown="if(event.key==='Enter') authSignIn()">
+      </div>
+      <button class="btn btn-primary" style="width:100%;justify-content:center;margin-top:4px"
+        id="auth-send-btn" onclick="authSignIn()">
+        Einloggen
+      </button>
+      <button class="btn btn-secondary" style="width:100%;justify-content:center;margin-top:8px"
+        onclick="cancelAdminLogin()">
+        Zurück zum Schnellzugang
+      </button>
+      <p id="auth-msg" style="margin-top:12px; font-size:13px; font-family:'DM Mono',monospace; min-height:20px;"></p>
     </div>
   </div>
+</div>
     
-    <header id="app-header">  
-  
-      <h1>Asset<span>Track</span></h1>
+<header id="app-header">  
+  <h1>Asset<span>Track</span></h1>
   <div class="header-actions">
     <div class="user-status">
       <div class="user-status-dot loading" id="user-status-dot"></div>
@@ -211,8 +204,8 @@
     <div class="role-select-wrap">
       <label>Rolle:</label>
       <select class="role-select" id="global-role-select" onchange="handleRoleChange(this.value)">
-        <option value="admin">Admin</option>
         <option value="user">User</option>
+        <option value="admin">Admin</option>
       </select>
     </div>
     <button class="btn btn-secondary admin-only" onclick="exportExcel()">⬇ Excel Export</button>
@@ -220,7 +213,7 @@
   </div>
 </header>
 
-<div class="tabs" id="app-tabs" style="display:none">
+<div class="tabs" id="app-tabs">
   <div class="tab admin-only" id="tab-dashboard" onclick="switchTab('dashboard')">Dashboard</div>
   <div class="tab admin-only" id="tab-assets" onclick="switchTab('assets')">Assets</div>
   <div class="tab admin-only" id="tab-loans" onclick="switchTab('loans')">Ausleihen</div>
@@ -229,9 +222,8 @@
   <div class="tab" id="tab-quick" onclick="switchTab('quick')">Schnellzugang</div>
 </div>
 
-<main id="app-main" style="display:none">
+<main id="app-main">
 
-  <!-- DASHBOARD -->
   <div class="view admin-only" id="view-dashboard">
     <div class="stats">
       <div class="stat-card"><div class="stat-label">Assets gesamt</div><div class="stat-value accent" id="stat-total">0</div></div>
@@ -243,26 +235,22 @@
     <div class="table-wrap"><table><thead><tr><th>Asset</th><th>Person</th><th>User ID</th><th>Seit</th><th>Aktion</th></tr></thead><tbody id="active-loans-table"></tbody></table></div>
   </div>
 
-  <!-- ASSETS -->
   <div class="view admin-only" id="view-assets">
     <div class="section-header"><div class="section-title">Assets verwalten</div><button class="btn btn-primary" onclick="openAddAsset()">+ Asset hinzufügen</button></div>
     <div class="search-bar"><input type="text" id="asset-search" placeholder="Assets durchsuchen..." oninput="renderAssets()"></div>
     <div class="table-wrap"><table><thead><tr><th>Name</th><th>Kategorie</th><th>Seriennummer</th><th>Status</th><th>Aktionen</th></tr></thead><tbody id="assets-table"></tbody></table></div>
   </div>
 
-  <!-- AUSLEIHEN -->
   <div class="view admin-only" id="view-loans">
     <div class="section-header"><div class="section-title">Alle aktiven Ausleihen</div><button class="btn btn-primary" onclick="openLoanModal()">+ Ausleihe erfassen</button></div>
     <div class="table-wrap"><table><thead><tr><th>Asset</th><th>Person</th><th>User ID</th><th>Ausgeliehen am</th><th>Aktion</th></tr></thead><tbody id="loans-table"></tbody></table></div>
   </div>
 
-  <!-- HISTORIE -->
   <div class="view admin-only" id="view-history">
     <div class="section-header"><div class="section-title">Ausleih-Historie</div></div>
     <div class="table-wrap"><table><thead><tr><th>Asset</th><th>Person</th><th>User ID</th><th>Ausgeliehen</th><th>Zurückgegeben</th></tr></thead><tbody id="history-table"></tbody></table></div>
   </div>
 
-  <!-- KARTEN -->
   <div class="view admin-only" id="view-cards">
     <div class="section-header">
       <div class="section-title">Mitarbeiterkarten</div>
@@ -276,7 +264,6 @@
     </div>
   </div>
 
-  <!-- SCHNELLZUGANG -->
   <div class="view" id="view-quick">
     <div class="quick-grid">
       <div class="quick-panel">
@@ -310,7 +297,6 @@
 
 </main>
 
-<!-- MODAL: Asset -->
 <div class="modal-overlay" id="modal-asset">
   <div class="modal">
     <h2 id="modal-asset-title">Asset hinzufügen</h2>
@@ -328,7 +314,6 @@
   </div>
 </div>
 
-<!-- MODAL: Ausleihe -->
 <div class="modal-overlay" id="modal-loan">
   <div class="modal">
     <h2>Ausleihe erfassen</h2>
@@ -351,7 +336,6 @@
   </div>
 </div>
 
-<!-- MODAL: Karte registrieren -->
 <div class="modal-overlay" id="modal-card">
   <div class="modal">
     <h2>Karte registrieren</h2>
@@ -371,7 +355,6 @@
   </div>
 </div>
 
-<!-- MODAL: Scanner -->
 <div id="modal-scanner" style="position:fixed; inset:0; background:rgba(15,15,15,0.95); backdrop-filter:blur(10px); align-items:center; justify-content:center; z-index:1000; display:none;">
   <div class="modal" style="width:400px; text-align:center; padding:32px; border:2px solid var(--border);">
     <div id="scanner-icon" style="font-size:48px; margin-bottom:16px; transition: all 0.3s;">💳</div>
@@ -384,7 +367,6 @@
   </div>
 </div>
 
-<!-- MODAL: Notification -->
 <div class="modal-overlay" id="modal-notification">
   <div class="modal modal-notify" id="notify-wrapper">
     <span class="notify-icon" id="notify-icon">✓</span>
@@ -398,14 +380,30 @@
 // ===== SUPABASE CONFIG =====
 const SUPABASE_URL = 'https://ugdoqrbiampugaivjisy.supabase.co/rest/v1';
 const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InVnZG9xcmJpYW1wdWdhaXZqaXN5Iiwicm9sZSI6InNlcnZpY2Vfcm9sZSIsImlhdCI6MTc3OTA5NTM3MSwiZXhwIjoyMDk0NjcxMzcxfQ.dxV2mRs6ECXsPFNgcrqFT2VQVlQXyqYeM7UQdNGVNKw';
-
-// ===== AUTH =====
 const SUPABASE_BASE = 'https://ugdoqrbiampugaivjisy.supabase.co';
 const SUPABASE_ANON = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InVnZG9xcmJpYW1wdWdhaXZqaXN5Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzkwOTUzNzEsImV4cCI6MjA5NDY3MTM3MX0.1SqyAvEf-WF2tvzdmoMlS8pu72AJMDsiF-EsTiDL4xQ';
 
 const { createClient } = supabase;
 const authClient = createClient(SUPABASE_BASE, SUPABASE_ANON);
 
+const supabaseHeaders = {
+  'apikey': SUPABASE_KEY,
+  'Authorization': `Bearer ${SUPABASE_KEY}`,
+  'Content-Type': 'application/json',
+  'Prefer': 'return=representation'
+};
+
+// ===== STATE =====
+let assets = [];
+let loans = [];
+let history = [];
+let cards = [];
+let currentRole = 'user';
+let pendingLoanData = null;
+let pendingReturnId = null;
+let selectedUserForLoan = null;
+
+// ===== AUTH MANAGEMENT =====
 async function authSignIn() {
   const email    = document.getElementById('auth-email-input').value.trim();
   const password = document.getElementById('auth-password-input').value;
@@ -430,7 +428,6 @@ function authMsg(text, color) {
   if (el) { el.textContent = text; el.style.color = color; }
 }
 
-// 1. Initialisierung: Startet standardmäßig direkt im User-Modus
 async function initAuth() {
   const { data: { session } } = await authClient.auth.getSession();
   if (session) {
@@ -438,7 +435,7 @@ async function initAuth() {
   } else {
     currentRole = 'user';
     initRole();
-    loadAllDataFromSupabase();
+    await loadAllDataFromSupabase();
   }
 
   authClient.auth.onAuthStateChange((_event, session) => {
@@ -451,7 +448,6 @@ async function initAuth() {
   });
 }
 
-// 2. Wird ausgeführt, sobald der Supabase Login erfolgreich war
 function authSuccess(user) {
   document.body.classList.remove('locked');
   document.getElementById('auth-gate').style.display = 'none';
@@ -461,7 +457,6 @@ function authSuccess(user) {
   loadAllDataFromSupabase();
 }
 
-// 3. Loggt den Nutzer aus Supabase aus und setzt alles zurück auf Gast-Status
 async function authSignOut() {
   await authClient.auth.signOut();
   currentRole = 'user';
@@ -472,33 +467,14 @@ async function authSignOut() {
   loadAllDataFromSupabase();
 }
 
-// 4. Funktion für den neuen Abbrechen-Button im Login-Fenster
 function cancelAdminLogin() {
   document.getElementById('auth-gate').style.display = 'none';
   document.getElementById('global-role-select').value = 'user';
+  currentRole = 'user';
+  initRole();
 }
 
-initAuth();
-
-  
-const supabaseHeaders = {
-  'apikey': SUPABASE_KEY,
-  'Authorization': `Bearer ${SUPABASE_KEY}`,
-  'Content-Type': 'application/json',
-  'Prefer': 'return=representation'
-};
-
-// ===== STATE =====
-let assets = [];
-let loans = [];
-let history = [];
-let cards = [];
-let currentRole = 'user';
-let pendingLoanData = null;
-let pendingReturnId = null;
-let selectedUserForLoan = null;
-
-// ===== DATABASE LADEN =====
+// ===== DATABASE LOGIC =====
 async function loadAllDataFromSupabase() {
   setUserStatus('loading', 'Lade Datenbank...');
   try {
@@ -514,7 +490,7 @@ async function loadAllDataFromSupabase() {
       await loadCards();
     }
 
-    setUserStatus('ok', `Daten live synchronisiert (${currentRole.toUpperCase()})`);
+    setUserStatus('ok', `Daten synchronisiert (${currentRole.toUpperCase()})`);
     renderAll();
   } catch (err) {
     console.error('Fehler beim Laden:', err);
@@ -528,7 +504,6 @@ function setUserStatus(status, text) {
   if (dot && txt) { dot.className = 'user-status-dot ' + status; txt.textContent = text; }
 }
 
-// ===== KARTEN =====
 async function loadCards() {
   const res = await fetch(`${SUPABASE_URL}/auth_cards?select=*`, { headers: supabaseHeaders });
   if (res.ok) cards = await res.json();
@@ -580,7 +555,6 @@ async function deleteCard(id) {
   await loadCards();
 }
 
-// ===== NOTIFICATION =====
 function showNotification(title, message, type = 'success') {
   const wrapper = document.getElementById('notify-wrapper');
   const iconEl  = document.getElementById('notify-icon');
@@ -597,16 +571,13 @@ async function handleRoleChange(newRole) {
   if (newRole === 'admin') {
     const { data: { session } } = await authClient.auth.getSession();
     if (session) {
-      // Wenn bereits eingeloggt, direkt als Admin bestätigen
       authSuccess(session.user);
     } else {
-      // Wenn nicht eingeloggt, zeige das Supabase-Anmeldefenster
       document.getElementById('auth-gate').style.display = 'flex';
       document.getElementById('auth-email-input').focus();
     }
   } else {
-    // Wechsel zurück zu User meldet den Admin automatisch ab
-    authSignOut();
+    await authSignOut();
   }
 }
 
@@ -622,17 +593,17 @@ function initRole() {
   }
 }
 
-// ===== TABS =====
 function switchTab(tab) {
   if (currentRole === 'user' && tab !== 'quick') tab = 'quick';
   document.querySelectorAll('.tab').forEach(t => t.classList.toggle('active', t.id === 'tab-' + tab));
   document.querySelectorAll('.view').forEach(v => v.classList.remove('active'));
-  document.getElementById('view-' + tab).classList.add('active');
+  const targetView = document.getElementById('view-' + tab);
+  if (targetView) targetView.classList.add('active');
   if (tab === 'quick') initQuickTab();
   renderAll();
 }
 
-// ===== RENDER =====
+// ===== INTERFACE RENDERING =====
 function renderAll() {
   if (currentRole === 'admin') {
     renderDashboard(); renderAssets(); renderLoans(); renderHistory(); renderCards();
@@ -684,7 +655,6 @@ function renderHistory() {
   tbody.innerHTML = [...history].reverse().map(h => `<tr><td><strong>${h.assetName||'?'}</strong></td><td>${h.person}</td><td class="mono">${h.userId||'–'}</td><td class="mono">${h.loanDate}</td><td class="mono">${h.returnDate}</td></tr>`).join('');
 }
 
-// ===== SCHNELLZUGANG =====
 function initQuickTab() {
   fillQuickSelect();
   ['quick-person','quick-userid','return-search'].forEach(id => { const el = document.getElementById(id); if(el) el.value = ''; });
@@ -701,7 +671,7 @@ function fillQuickSelect() {
     : avail.map(a => `<option value="${a.id}">${a.name}</option>`).join('');
 }
 
-// ===== AUTOFILL =====
+// ===== AUTOFILL LOGIC =====
 async function handleUserAutofill(inputEl, type, isModal = false) {
   const prefix = isModal ? 'loan-' : 'quick-';
   const val    = inputEl.value.trim();
@@ -760,21 +730,20 @@ document.addEventListener('click', e => {
   if (!e.target.closest('.form-group')) document.querySelectorAll('.autofill-suggestions').forEach(el => el.style.display = 'none');
 });
 
+// ===== AUSLEIH-ABLAUF =====
 async function saveLoan() {
   const assetId = document.getElementById('loan-asset').value;
   const person  = document.getElementById('loan-person').value.trim();
   const userId  = document.getElementById('loan-userid').value.trim();
   const date    = document.getElementById('loan-date').value;
-  
   if (!person || !assetId) return;
-  
   if (!selectedUserForLoan || selectedUserForLoan.name.toLowerCase() !== person.toLowerCase()) {
     showNotification('Fehler', 'Bitte wähle einen gültigen Benutzer aus der Vorschlagsliste aus!', 'error');
     return;
   }
 
+  // Korrektur: Klammer hier geschlossen, damit der restliche Ablauf IN der Funktion bleibt!
   const loanPayload = { id: Date.now().toString(), assetId, person, userId, date };
-  
   if (currentRole === 'user') {
     pendingLoanData = { loanPayload, isModal: true };
     openScannerModal();
@@ -782,7 +751,7 @@ async function saveLoan() {
     pendingLoanData = { loanPayload, isModal: true };
     await executeFinalLoan();
   }
-} 
+}
 
 async function quickLoan() {
   const assetId = document.getElementById('quick-asset').value;
@@ -794,17 +763,17 @@ async function quickLoan() {
     showNotification('Fehler', 'Bitte wähle einen gültigen Benutzer aus der Vorschlagsliste aus!', 'error');
     return;
   }
-const loanPayload = { id: Date.now().toString(), assetId, person, userId, date };
-if (currentRole === 'user') {
-  pendingLoanData = { loanPayload, isModal: false };
-  openScannerModal();
-} else {
-  pendingLoanData = { loanPayload, isModal: false };
-  await executeFinalLoan();
-}
+  const loanPayload = { id: Date.now().toString(), assetId, person, userId, date };
+  if (currentRole === 'user') {
+    pendingLoanData = { loanPayload, isModal: false };
+    openScannerModal();
+  } else {
+    pendingLoanData = { loanPayload, isModal: false };
+    await executeFinalLoan();
+  }
 }
 
-// ===== KARTENSCANNER =====
+// ===== HARDWARE KARTENSCANNER SIMULATION =====
 function openScannerModal() {
   document.getElementById('modal-scanner').style.display = 'flex';
   const inputEl = document.getElementById('scanner-hidden-input');
@@ -852,10 +821,10 @@ async function verifyCardInSupabase(hexCode) {
       titleEl.textContent = 'Bestätigt!';
       msgEl.textContent   = `Karte von ${cardOwner} erkannt.`;
       msgEl.style.color   = '#10b981';
-     setTimeout(async () => {
-  if (pendingReturnId) await executeFinalReturn(pendingReturnId);
-  else await executeFinalLoan();
-}, 1000);
+      setTimeout(async () => {
+        if (pendingReturnId) await executeFinalReturn(pendingReturnId);
+        else await executeFinalLoan();
+      }, 1000);
     } else {
       iconEl.textContent  = '❌';
       titleEl.textContent = 'Zugriff verweigert';
@@ -873,10 +842,9 @@ async function executeFinalLoan() {
   if (!pendingLoanData) return;
   const { loanPayload, isModal } = pendingLoanData;
 
-  // Verbessertes Payload mit eingebautem Fehler-Feedback
   const dbPayload = {
     id: loanPayload.id,
-    assetId: loanPayload.assetId, // Korrigierter Spaltenname
+    assetId: loanPayload.assetId,
     person: loanPayload.person,
     userId: loanPayload.userId,
     date: loanPayload.date
@@ -890,7 +858,6 @@ async function executeFinalLoan() {
     
     if (!res.ok) {
       const errorDetails = await res.text();
-      console.error("Supabase Error Details:", errorDetails);
       throw new Error(`Fehler: ${res.status} - ${errorDetails}`);
     }
 
@@ -910,7 +877,7 @@ async function executeFinalLoan() {
   }
 }
 
-  async function executeFinalReturn(loanId) {
+async function executeFinalReturn(loanId) {
   const loan  = loans.find(l => l.id === loanId);
   if (!loan) return;
   const asset = assets.find(a => a.id === loan.assetId);
@@ -945,7 +912,7 @@ function searchForReturn(selectedNameOrId) {
   }).join('') + `</div>`;
 }
 
-// ===== ASSET AKTIONEN =====
+// ===== ASSETS CRUD =====
 function openAddAsset() {
   document.getElementById('modal-asset-title').textContent = 'Asset hinzufügen';
   document.getElementById('asset-id').value = '';
@@ -1021,6 +988,8 @@ function exportExcel() {
   XLSX.writeFile(wb, 'AssetTrack_Export.xlsx');
 }
 
+// Start der Anwendung
+initAuth();
 </script>
 </body>
 </html>
