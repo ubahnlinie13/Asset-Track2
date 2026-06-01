@@ -463,10 +463,15 @@ async function authSignOut() {
   history = [];
   cards = [];
   setUserStatus('ok', 'Gast-Modus');
+  
+  // Das sorgt dafür, dass das Dropdown oben rechts wieder auf "User" springt:
+  const selectEl = document.getElementById('global-role-select');
+  if (selectEl) selectEl.value = 'user';
+  
   initRole();
   loadAllDataFromSupabase();
 }
-
+  
 function cancelAdminLogin() {
   document.getElementById('auth-gate').style.display = 'none';
   document.getElementById('global-role-select').value = 'user';
