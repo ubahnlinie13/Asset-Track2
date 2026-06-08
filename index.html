@@ -677,8 +677,7 @@ async function handleUserAutofill(inputEl, type, isModal = false) {
   try {
     const encoded = encodeURIComponent(val);
     const res = await fetch(
-      `${SUPABASE_URL}/User_Data?select=Name,Axa%20Windows%20ID&or=(Name.ilike.*${encoded}*,Axa%20Windows%20ID.ilike.*${encoded}*)&limit=10`,
-      { headers: supabaseHeaders }
+`${SUPABASE_URL}/User_Data?select=Name,Windows%20ID&or=(Name.ilike.*${encoded}*,Windows%20ID.ilike.*${encoded}*)&limit=10`      { headers: supabaseHeaders }
     );
     const data = await res.json();
     if (!data.length) { listEl.style.display = 'none'; return; }
