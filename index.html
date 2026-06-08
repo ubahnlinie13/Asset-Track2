@@ -279,7 +279,8 @@
           <input type="text" id="quick-userid" placeholder="X123456" oninput="handleUserAutofill(this, 'id')" autocomplete="off">
           <div id="quick-userid-suggestions" class="autofill-suggestions"></div>
         </div>
-        <div class="form-group"><label>Datum</label><input type="date" id="quick-date"></div>
+        <div class="form-group"><label>Datum</label><input type="date" id="quick-date" 
+  value=""></div>
         <button class="btn btn-primary" style="width:100%" onclick="quickLoan()">Ausleihe erfassen</button>
       </div>
 
@@ -427,7 +428,9 @@ function authMsg(text, color) {
   const el = document.getElementById('auth-msg');
   if (el) { el.textContent = text; el.style.color = color; }
 }
-
+  
+document.getElementById('quick-date').value = new Date().toISOString().split('T')[0];
+  
 async function initAuth() {
   const { data: { session } } = await authClient.auth.getSession();
   if (session) {
