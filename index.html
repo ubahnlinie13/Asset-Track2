@@ -684,8 +684,8 @@ const res = await fetch(
     if (!data.length) { listEl.style.display = 'none'; return; }
     listEl.innerHTML = data.map(u => {
       const safeName = u.Name.replace(/'/g,"\\'");
-      const safeId = (u['Axa Windows ID']||'').replace(/'/g,"\\'");
-      return `<div class="autofill-suggestion-item" onclick="selectUserSuggestion('${safeName}','${safeId}','${prefix}')"><span>${u.Name}</span><span class="autofill-id">${u['Axa Windows ID'] || ''}</span></div>`;
+      const safeId = (u['Windows ID']||'').replace(/'/g,"\\'");
+      return `<div class="autofill-suggestion-item" onclick="selectUserSuggestion('${safeName}','${safeId}','${prefix}')"><span>${u.Name}</span><span class="autofill-id">${u['Windows ID'] || ''}</span></div>`;
     }).join('');
     listEl.style.display = 'block';
   } catch (err) { console.error(err); }
@@ -711,7 +711,7 @@ async function handleReturnAutofill(inputEl) {
     const data = await res.json();
     if (!data.length) { listEl.style.display = 'none'; return; }
     listEl.innerHTML = data.map(u =>
-      `<div class="autofill-suggestion-item" onclick="selectReturnUser('${u.Name.replace(/'/g,"\\'")}')"><span>${u.Name}</span><span class="autofill-id">${u['Axa Windows ID'] || ''}</span></div>`
+      `<div class="autofill-suggestion-item" onclick="selectReturnUser('${u.Name.replace(/'/g,"\\'")}')"><span>${u.Name}</span><span class="autofill-id">${u['Windows ID'] || ''}</span></div>`
     ).join('');
     listEl.style.display = 'block';
   } catch (err) { console.error(err); }
