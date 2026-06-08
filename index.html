@@ -676,9 +676,10 @@ async function handleUserAutofill(inputEl, type, isModal = false) {
   if (val.length < 3) { listEl.style.display = 'none'; return; }
   try {
     const encoded = encodeURIComponent(val);
-    const res = await fetch(
-`${SUPABASE_URL}/User_Data?select=Name,Windows%20ID&or=(Name.ilike.*${encoded}*,Windows%20ID.ilike.*${encoded}*)&limit=10`      { headers: supabaseHeaders }
-    );
+const res = await fetch(
+  `${SUPABASE_URL}/User_Data?select=Name,Windows%20ID&or=(Name.ilike.*${encoded}*,Windows%20ID.ilike.*${encoded}*)&limit=10`,
+  { headers: supabaseHeaders }
+);
     const data = await res.json();
     if (!data.length) { listEl.style.display = 'none'; return; }
     listEl.innerHTML = data.map(u => {
@@ -704,7 +705,7 @@ async function handleReturnAutofill(inputEl) {
   try {
     const encoded = encodeURIComponent(val);
     const res = await fetch(
-      `${SUPABASE_URL}/User_Data?select=Name,Axa%20Windows%20ID&or=(Name.ilike.*${encoded}*,Axa%20Windows%20ID.ilike.*${encoded}*)&limit=10`,
+      `${SUPABASE_URL}/User_Data?select=Name,Windows%20ID&or=(Name.ilike.*${encoded}*,Axa%20Windows%20ID.ilike.*${encoded}*)&limit=10`,
       { headers: supabaseHeaders }
     );
     const data = await res.json();
